@@ -9,48 +9,40 @@ class MyApp extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: HomeActivity());
+    return MaterialApp(home: HomeActivity());
   }
 }
 
 class HomeActivity extends StatelessWidget{
-  const HomeActivity({super.key});
-
+  HomeActivity({super.key});
+  final List<Map<String, dynamic>> shoppingItems = [
+    {"name": "Apple", "icon": Icons.shopping_cart},
+    {"name": "Banana", "icon": Icons.shopping_cart},
+    {"name": "Bread", "icon": Icons.shopping_cart},
+    {"name": "Milk", "icon": Icons.shopping_cart},
+    {"name": "Egg", "icon": Icons.shopping_cart},
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 70,
-        toolbarHeight: 100,
-        leading: Icon(Icons.home),
-        title: Text('MyApp'),
+        title: Text('My Shopping List'),
         centerTitle: true,
-        backgroundColor: Colors.green,
-        actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.share))
-        ],
+        backgroundColor: Colors.blue,
+        actions: [Icon(Icons.shopping_cart)],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "This is mod 5 Assignment",
-              style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
-            RichText(text: TextSpan(
-              style: TextStyle(color: Colors.amber,fontSize: 18),
-              children: [
-                TextSpan(text: 'My ',style: TextStyle(color: Colors.red)),
-                TextSpan(text: 'phone ',style: TextStyle(color: Colors.cyan,fontSize: 12)),
-                TextSpan(text: 'name ',style: TextStyle(color: Colors.purple,fontSize: 15,fontWeight: FontWeight.bold)),
-                TextSpan(text: 'Poco x4 Pro'),
-              ]
-            ))
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: shoppingItems.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            leading: Icon(shoppingItems[index]["icon"]),
+            title: Text(shoppingItems[index]["name"]),
+            onTap: () {
+              // Handle item tap
+            },
+          );
+        },
       ),
-
     );
   }
 }
