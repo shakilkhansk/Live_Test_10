@@ -9,108 +9,106 @@ class MyApp extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(home: HomeActivity(),);
   }
 }
-MySnackBar(message,context){
-  return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 3),
-      )
-  );
+class HomeActivity extends StatefulWidget{
+  const HomeActivity({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _HomeActivityState();
+
 }
-class HomeActivity extends StatelessWidget{
-  HomeActivity({super.key});
-  var myList = [
-    {
-      'name': 'Flower 01', 'img' : 'https://wallpapers.com/images/hd/one-dark-pink-flower-ebsu0arli8p5x5as.webp',
-    },
-    {
-      'name': 'Flower 02', 'img' : 'https://wallpapers.com/images/hd/pink-anthurium-flower-a1tiy5bpczkyyybn.webp',
-    },
-    {
-      'name': 'Flower 03', 'img' : 'https://wallpapers.com/images/hd/black-rose-flower-62fqn27bjuaybyop.webp'
-    },
-    {
-      'name': 'Flower 04', 'img' : 'https://wallpapers.com/images/high/macro-shot-of-pink-sunflower-m1eh0uh0ahjzpchn.webp'
-    },
-    {
-      'name': 'Flower 05', 'img' : 'https://wallpapers.com/images/high/close-up-shot-of-burgundy-rose-m2if1v7bqy6gcprw.webp'
-    },
-    {
-      'name': 'Flower 06', 'img' : 'https://wallpapers.com/images/high/red-rose-floating-on-water-zi9inv2edcgsjj6d.webp'
-    }
+class _HomeActivityState extends State<HomeActivity>{
+  var products = [
+    {'name':'Product 01','price': '50'},
+    {'name':'Product 02','price': '10'},
+    {'name':'Product 03','price': '15'},
+    {'name':'Product 04','price': '20'},
+    {'name':'Product 05','price': '25'},
+    {'name':'Product 06','price': '30'},
+    {'name':'Product 07','price': '35'},
+    {'name':'Product 08','price': '40'},
+    {'name':'Product 09','price': '50'},
+    {'name':'Product 10','price': '75'},
   ];
+  List<int> productCounters = List.generate(10, (index) => 0);
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('Photo Gallery'),
+        title: Text('Product List'),
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(padding: EdgeInsets.all(10),
-              child: Text('Welcome to my Photo Gallery',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),),
-            ),
-          ),
-        Padding(padding: EdgeInsets.all(10),child:
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            label: Text('Search for photos...'),
-          ),
-        ),),
-          Expanded(child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              itemCount: myList.length,
-              itemBuilder: (context,index){
-                return GestureDetector(
-                  onTap: (){MySnackBar(myList[index]['name']!, context);},
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(padding: EdgeInsets.all(10),child: Image.network(myList[index]['img']!, fit: BoxFit.cover,height: 80, width: 80,)),
-                      Text(myList[index]['name']!)
-                    ],
-                  ),
-                );
-              }),
-          ),
-          Expanded(child: ListView.builder(
-              itemCount: 3,
-              itemBuilder: (context,index){
-                return GestureDetector(
-                  onTap: (){MySnackBar(myList[index]['name']!, context);},
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Text(myList[index]['name']!),
-                      leading: Image.network(myList[index]['img']!, fit: BoxFit.cover,height: 40, width: 40,),
-                      subtitle: Text('Description for photo $index'),),
-                      Divider(height: 1,)
-                      // Padding(padding: EdgeInsets.all(10),child: Image.network(myList[index]['img']!, fit: BoxFit.cover,height: 80, width: 80,)),
-                      // Text(myList[index]['name']!)
-                    ],
-                  ),
-                );
-              }),
-          ),
-          Center(
-            child: ElevatedButton(onPressed: (){MySnackBar('Photos Uploaded Successfully', context);}, child: Icon(Icons.upload))
-            ,
-          )
-        ],
+      body: ListView.builder(
+          shrinkWrap: true,
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(products[index]['name']!),
+              subtitle: Text('Price: '+products[index]['price']!),
+              trailing: Column(
+                  children: [
+                    Text("Counter: ${productCounters[index]}"),
+                    Expanded(child: ElevatedButton(onPressed: (){
+                      if(productCounters[index]<=4){
+                        setState(() {
+                          productCounters[index]++;
+                          if(productCounters[index]==5){
+                            MyAlertDialoge(context,products[index]['name']! );
+                          }
+                          counter = productCounters.where((element) => element != 0).length;
+                        });
+                      }
+                    }, child: Text('Buy Now')))
+                  ],
+                ),
+            );
+          },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage(counter.toString())));
+        },
+        child: Icon(Icons.shopping_cart_sharp),
       ),
     );
   }
+}
+
+class CartPage extends StatefulWidget {
+  String total = '0';
+  CartPage(this.total, {super.key});
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cart"),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Text("Total Products: ${widget.total}"),
+      ),
+    );
+  }
+}
+
+
+MyAlertDialoge(context,String product){
+  return showDialog(context: context, builder: (BuildContext context) {
+    return Expanded(child: AlertDialog(
+      title: Text('Congratulations!'),
+      content: Text("You've bought 5 $product"),
+      actions: [
+        TextButton(onPressed: (){Navigator.of(context).pop();}, child: Text('OK')),
+      ],
+    ));
+  });
 }
