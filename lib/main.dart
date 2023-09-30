@@ -1,87 +1,126 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ImageFeed(),
+      home: MyHomePage(),
     );
   }
 }
 
-class ImageFeed extends StatefulWidget {
-  @override
-  _ImageFeedState createState() => _ImageFeedState();
-}
-
-class _ImageFeedState extends State<ImageFeed> {
-  List<String> images = [
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    // Add more image URLs here
-  ];
-
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Image Feed"),
+        title: Text('Flower Profile'),
       ),
-      body: isPortrait
-          ? ListView.builder(
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return ImageCard(imageUrl: images[index]);
-        },
-      )
-          : GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return ImageCard(imageUrl: images[index]);
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (orientation == Orientation.portrait) {
+            return PortraitLayout();
+          } else {
+            return LandscapeLayout();
+          }
         },
       ),
     );
   }
 }
 
-class ImageCard extends StatelessWidget {
-  final String imageUrl;
-
-  ImageCard({required this.imageUrl});
-
+class PortraitLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Image.network(imageUrl, width: 150, height: 150, fit: BoxFit.cover),
-          Padding(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Center(
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
-            // child: Text("Image Description"),
+            child: ClipOval(
+            child: Image.network('https://images.pexels.com/photos/60597/dahlia-red-blossom-bloom-60597.jpeg',height: 200, width: 200, fit: BoxFit.cover,),
+            ),
           ),
-        ],
-      ),
+        ), // Replace with your image path
+        ListTile(
+          title: Center(child: Text('Red Dahlia',style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),)),
+          subtitle: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text('The red dahlia is a popular flowering plant known for its vibrant and rich red-colored flowers. Dahlias, in general, are a diverse group of plants belonging to the Asteraceae family and are native to Mexico,'),
+          ),
+        ),
+        Expanded(
+          child: GridView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+            itemCount: 15,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Image.network('http://wallpapers.net/web/wallpapers/huge-sunflower-hd-wallpaper/thumbnail/lg.jpg',width: 100,height: 100,fit: BoxFit.cover),
+              ); // Replace with your image paths
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class LandscapeLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipOval(
+                    child: Image.network('https://images.pexels.com/photos/60597/dahlia-red-blossom-bloom-60597.jpeg',height: 200, width: 200, fit: BoxFit.cover,),
+                  ),
+                ),
+              ), // Replace with your image path
+              ListTile(
+                title: Center(child: Text('Red Dahlia',style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),)),
+                subtitle: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text('The red dahlia is a popular flowering plant known for its vibrant and rich red-colored flowers. Dahlias, in general, are a diverse group of plants belonging to the Asteraceae family and are native to Mexico,'),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Expanded(
+            child: GridView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+              ),
+              itemCount: 15,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Image.network('http://wallpapers.net/web/wallpapers/huge-sunflower-hd-wallpaper/thumbnail/lg.jpg',width: 100,height: 100,fit: BoxFit.cover),
+                ); // Replace with your image paths
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
