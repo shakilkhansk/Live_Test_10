@@ -1,126 +1,73 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(),
+      home: SizeSelector(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class SizeSelector extends StatefulWidget {
+  @override
+  _SizeSelectorState createState() => _SizeSelectorState();
+}
+
+MySnackBar(message, context) {
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.green,
+      duration: Duration(seconds: 3),
+    ),
+  );
+}
+
+class _SizeSelectorState extends State<SizeSelector> {
+  String selectedSize = '';
+
+  ElevatedButton _buildSizeButton(BuildContext context, String size) {
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          selectedSize = size;
+        });
+        MySnackBar(size, context);
+      },
+      style: ElevatedButton.styleFrom(
+        primary: size == selectedSize ? Colors.green : Colors.blue,
+      ),
+      child: Text(size),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flower Profile'),
+        title: const Text('Size Selector'),
+        centerTitle: true,
       ),
-      body: OrientationBuilder(
-        builder: (context, orientation) {
-          if (orientation == Orientation.portrait) {
-            return PortraitLayout();
-          } else {
-            return LandscapeLayout();
-          }
-        },
+      body: Center(
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 10.0, // Adjust the spacing between buttons
+          runSpacing: 10.0, // Adjust the spacing between rows
+          children: [
+            _buildSizeButton(context, 'S'),
+            _buildSizeButton(context, 'M'),
+            _buildSizeButton(context, 'L'),
+            _buildSizeButton(context, 'XL'),
+            _buildSizeButton(context, 'XXL'),
+            _buildSizeButton(context, 'XXXL'),
+          ],
+        ),
       ),
-    );
-  }
-}
-
-class PortraitLayout extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ClipOval(
-            child: Image.network('https://images.pexels.com/photos/60597/dahlia-red-blossom-bloom-60597.jpeg',height: 200, width: 200, fit: BoxFit.cover,),
-            ),
-          ),
-        ), // Replace with your image path
-        ListTile(
-          title: Center(child: Text('Red Dahlia',style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),)),
-          subtitle: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Text('The red dahlia is a popular flowering plant known for its vibrant and rich red-colored flowers. Dahlias, in general, are a diverse group of plants belonging to the Asteraceae family and are native to Mexico,'),
-          ),
-        ),
-        Expanded(
-          child: GridView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-            ),
-            itemCount: 15,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Image.network('http://wallpapers.net/web/wallpapers/huge-sunflower-hd-wallpaper/thumbnail/lg.jpg',width: 100,height: 100,fit: BoxFit.cover),
-              ); // Replace with your image paths
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class LandscapeLayout extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Column(
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipOval(
-                    child: Image.network('https://images.pexels.com/photos/60597/dahlia-red-blossom-bloom-60597.jpeg',height: 200, width: 200, fit: BoxFit.cover,),
-                  ),
-                ),
-              ), // Replace with your image path
-              ListTile(
-                title: Center(child: Text('Red Dahlia',style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),)),
-                subtitle: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text('The red dahlia is a popular flowering plant known for its vibrant and rich red-colored flowers. Dahlias, in general, are a diverse group of plants belonging to the Asteraceae family and are native to Mexico,'),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Expanded(
-            child: GridView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-              ),
-              itemCount: 15,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Image.network('http://wallpapers.net/web/wallpapers/huge-sunflower-hd-wallpaper/thumbnail/lg.jpg',width: 100,height: 100,fit: BoxFit.cover),
-                ); // Replace with your image paths
-              },
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
